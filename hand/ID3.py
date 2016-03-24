@@ -71,6 +71,8 @@ class Node(object):
     def predict(self,record):
         if len(self.child)==0:
             return self.default
+        elif not self.child.has_key(record[self.check]):
+            return self.default
         return self.child[record[self.check]].predict(record)
     def accuracy(self,data=None,Target_attribute=None):
         if not Target_attribute:
@@ -80,10 +82,11 @@ class Node(object):
         predicted=data.apply(self.predict,axis=1)
         df=data[Target_attribute]==predicted
         return df.mean()
-        
-data=pd.read_csv('ID3test.csv')
-tree=Node(data,'PlayTennis',['Outlook','Humidity','Wind','Temperature'])
-tree.build()
 
-print tree.predict(data.ix[0])
-print tree.accuracy()
+if __name__=='__main__':
+    data=pd.read_csv('../data/ID3test.csv')
+    tree=Node(data,'PlayTennis',['Outlook','Humidity','Wind','Temperature'])
+    tree.build()
+    
+    print tree.predict(data.ix[0])
+    print tree.accuracy()
